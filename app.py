@@ -6,13 +6,15 @@ from database_helpers import (
     purchase_product
 )
 
-app = Flask(__name__)
-
+# Creates a Flask application instance. __name__ is a special Python variable
+# that contains the name of the current module. Flask uses this to know where to
+# look for templates, static files, etc.
+app = Flask(__name__) 
 
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('folder/index.html')
 
 
 

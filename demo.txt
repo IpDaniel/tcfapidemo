@@ -1,0 +1,22 @@
+if people are following along:
+
+- explain how to create virtual environment
+- explain how to install dependencies
+  - flask
+  - pandas
+  - openpyxl
+  - xlsxwriter
+
+next:
+
+- explain the problem
+  - issues
+  - helper functions
+  - database
+  - html template
+- import helper functions
+- import flask
+
+- create app
+- line to run app
+
