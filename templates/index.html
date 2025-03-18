@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce API Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .section {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>E-Commerce API Demo</h1>
+
+    <!-- View Product Section -->
+    <div class="section">
+        <h2>View Product</h2>
+        <form id="viewProductForm">
+            <div class="form-group">
+                <label for="productId">Product ID:</label>
+                <input type="number" id="productId" name="productId" required>
+            </div>
+            <button type="submit">View Product</button>
+        </form>
+    </div>
+
+    <!-- Add New Product Section -->
+    <div class="section">
+        <h2>Add New Product (Sellers)</h2>
+        <form id="addProductForm">
+            <div class="form-group">
+                <label for="sellerId">Seller ID:</label>
+                <input type="number" id="sellerId" name="sellerId" required>
+            </div>
+            <div class="form-group">
+                <label for="productName">Product Name:</label>
+                <input type="text" id="productName" name="productName" required>
+            </div>
+            <div class="form-group">
+                <label for="productPrice">Price:</label>
+                <input type="number" id="productPrice" name="productPrice" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="productDescription">Description:</label>
+                <input type="text" id="productDescription" name="productDescription" required>
+            </div>
+            <button type="submit">Add Product</button>
+        </form>
+    </div>
+
+    <!-- Customer Registration Section -->
+    <div class="section">
+        <h2>New Customer Registration</h2>
+        <form id="registerCustomerForm">
+            <div class="form-group">
+                <label for="customerName">Name:</label>
+                <input type="text" id="customerName" name="customerName" required>
+            </div>
+            <div class="form-group">
+                <label for="customerEmail">Email:</label>
+                <input type="email" id="customerEmail" name="customerEmail" required>
+            </div>
+            <div class="form-group">
+                <label for="customerPassword">Password:</label>
+                <input type="password" id="customerPassword" name="customerPassword" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <!-- Purchase Product Section -->
+    <div class="section">
+        <h2>Purchase Product</h2>
+        <form id="purchaseProductForm">
+            <div class="form-group">
+                <label for="buyerCustomerId">Customer ID:</label>
+                <input type="number" id="buyerCustomerId" name="buyerCustomerId" required>
+            </div>
+            <div class="form-group">
+                <label for="purchaseProductId">Product ID:</label>
+                <input type="number" id="purchaseProductId" name="purchaseProductId" required>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" min="1" value="1" required>
+            </div>
+            <button type="submit">Purchase</button>
+        </form>
+    </div>
+
+    <script>
+        // Helper function for API calls
+        async function makeRequest(url, method, data = null) {
+            const options = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            };
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
+            const response = await fetch(url, options);
+            const responseData = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(responseData.message || 'An error occurred');
+                alert(responseData.error || 'An error occurred');
+            }
+            return responseData;
+        }
+
+        // View Product
+        document.getElementById('viewProductForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const productId = document.getElementById('productId').value;
+            try {
+                const result = await makeRequest(`/product/${productId}`, 'GET');
+                alert(JSON.stringify(result, null, 2));
+            } catch (error) {
+                alert('Error viewing product: ' + error.message);
+            }
+        });
+
+        // Add Product
+        document.getElementById('addProductForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const data = {
+                sellerId: parseInt(document.getElementById('sellerId').value),
+                productName: document.getElementById('productName').value,
+                productPrice: parseFloat(document.getElementById('productPrice').value),
+                productDescription: document.getElementById('productDescription').value
+            };
+            try {
+                const result = await makeRequest('/product/add', 'POST', data);
+                alert(result.message);
+                this.reset();
+            } catch (error) {
+                alert('Error adding product: ' + error.message);
+            }
+        });
+
+        // Register Customer
+        document.getElementById('registerCustomerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const data = {
+                customerName: document.getElementById('customerName').value,
+                customerEmail: document.getElementById('customerEmail').value,
+                customerPassword: document.getElementById('customerPassword').value
+            };
+            try {
+                const result = await makeRequest('/customer/register', 'POST', data);
+                alert(`${result.message}\nYour Customer ID is: ${result.customerId}`);
+                this.reset();
+            } catch (error) {
+                alert('Error registering customer: ' + error.message);
+            }
+        });
+
+        // Purchase Product
+        document.getElementById('purchaseProductForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const data = {
+                buyerCustomerId: parseInt(document.getElementById('buyerCustomerId').value),
+                purchaseProductId: parseInt(document.getElementById('purchaseProductId').value),
+                quantity: parseInt(document.getElementById('quantity').value)
+            };
+            try {
+                const result = await makeRequest('/purchase', 'POST', data);
+                alert(result.message);
+                this.reset();
+            } catch (error) {
+                alert('Error processing purchase: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
