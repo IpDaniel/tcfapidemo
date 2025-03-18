@@ -20,3 +20,23 @@ next:
 - create app
 - line to run app
 
+- try to visit localhost:5000
+- explain that we need to return something
+  - route decorators
+  - return render_template
+
+- product route
+  - get product by id
+  - ask what we should do if we are getting based on a variable
+  - explain parameters built into the route
+  - what should we do if we're not returning an entire page?
+  - explain jsonify
+
+- add product route
+  - explain methods
+  - explain post
+  - explain get
+  - ask what we should do if we have to make the route flexible for a variable
+  - ask what we should do if we're not returning an entire page
+  - explain jsonify
+  - 
